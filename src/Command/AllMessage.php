@@ -3,8 +3,12 @@
 namespace App\Command;
 
 use App\DataTransferObject\TestDataProvider;
+use App\Repository\MatchDetailRepository;
+use App\Service\MatchManager;
+use App\Service\MatchReader;
 use App\Service\Message;
 use App\Service\Redis\RedisService;
+use App\Tests\Unit\Helper\MatchHelperTest;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -18,12 +22,22 @@ class AllMessage extends Command
      * @var \App\Service\Redis\RedisService
      */
     private RedisService $redisService;
+    private MatchReader $matchReader; //zmiana ja
+    private MatchDetailRepository $matchDetailRepository;
+    private MatchManager $matchManager;
+    //private MatchHelperTest $matchHelperTest;
 
 
-    public function __construct(RedisService $redisService)
+    public function __construct(RedisService $redisService,
+                                MatchReader $matchReader, //to dopisane
+                                MatchDetailRepository $matchDetailRepository,
+                                MatchManager $matchManager)
     {
         parent::__construct();
         $this->redisService = $redisService;
+        $this->matchReader = $matchReader;
+        $this->matchDetailRepository = $matchDetailRepository;
+        $this->matchManager = $matchManager;
     }
 
     protected function configure(): void

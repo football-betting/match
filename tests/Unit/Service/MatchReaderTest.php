@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 
 
+use App\DataTransferObject\MatchDataProvider;
+use App\DataTransferObject\MatchListDataProvider;
 use App\Repository\MatchDetailRepository;
 use App\Service\MatchManager;
 use App\Service\MatchReader;
@@ -52,7 +54,7 @@ class MatchReaderTest extends KernelTestCase
 
     public function testGetMatchList()
     {
-        $matchList = $this->matchHelperTest->createTemporaryMatch();
+        $this->matchHelperTest->createTemporaryMatch();
         $matchListFromDB = $this->matchReader->getMatchList();
 
         self::assertCount(2, $matchListFromDB);
@@ -76,7 +78,7 @@ class MatchReaderTest extends KernelTestCase
 
     public function testGetMatchWhereId()
     {
-        $matchList = $this->matchHelperTest->createTemporaryMatch();
+        $this->matchHelperTest->createTemporaryMatch();
         $matchFromDB = $this->matchReader->getMatchWhereId('2020-06-20:2000:PL-IT');
 
         self::assertSame('2020-06-20:2000:PL-IT', $matchFromDB->getMatchId());
@@ -89,19 +91,39 @@ class MatchReaderTest extends KernelTestCase
         $this->matchHelperTest->deleteTemporaryMatch();
     }
 
-
-
-    public function testGetMatchListAsJson(): void
+    public function testGetMatchWhereIdNegativ()
     {
-
         $this->matchHelperTest->createTemporaryMatch();
+        $matchFromDB = $this->matchReader->getMatchWhereId('9999-99-99:9999:PL-IT');
 
-        $list = $this->matchManager->saveFromJsonToDB($this->matchHelperTest->getJsonData());
-
-        self::assertSame($this->matchHelperTest->getJsonData(),
-            $this->matchReader->getMatchListAsJson());
+        self::assertNull($matchFromDB);
 
         $this->matchHelperTest->deleteTemporaryMatch();
     }
+
+
+    public function testDataProvider(): void
+    {
+        $this->matchManager->saveFromJsonToDB($this->matchHelperTest->getJsonData());
+
+        self::assertSame($this->matchHelperTest->getJsonData(),$this->matchReader->getMatchListAsJsonDataProvider());
+        $this->matchHelperTest->deleteTemporaryMatch();
+    }
+
+    /*
+    public function testGetMatchListAsJson(): void
+    {
+        $this->matchManager->saveFromJsonToDB($this->matchHelperTest->getJsonData());
+
+        $matchListAsJsonFromDb = '{"event":"match","data":'.$this->matchReader->getMatchListAsJson().'}';
+
+        self::assertSame($this->matchHelperTest->getJsonData(), $matchListAsJsonFromDb);
+
+        // self::assertSame($this->matchHelperTest->getJsonData(),
+        //    $this->matchReader->getMatchListAsJson());
+
+        $this->matchHelperTest->deleteTemporaryMatch();
+    }
+*/
 }
 

@@ -45,7 +45,6 @@ class MatchManager
             $matchDetail = $this->matchMapper->mapToMatchDetail($match);
 
             $matchFromDb = $this->matchDetailRepository->findOneBy(['matchId' => $matchDetail->getMatchId()]);
-            //var_dump($matchFromDb);
 
            if($matchFromDb instanceof MatchDetail)
             {

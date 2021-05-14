@@ -36,19 +36,25 @@ class MatchReader
         return $this->matchDetailRepository->findAll();
     }
 
+
     public function getMatchListAsJson()
     {
         $matchList = $this->matchDetailRepository->findAll();
         return $this->matchMapper->mapArrayToJson($matchList);
     }
 
+    public function getMatchListAsJsonDataProvider()
+    {
+        $matchList = $this->matchDetailRepository->findAll();
+        $matchLisAsJson = $this->matchMapper->mapArrayToJsonWithDp($matchList, 'match');
+        return json_encode($matchLisAsJson);
+    }
 
     public function getMatchWhereId(string $id): ?MatchDetail
     {
         $match = $this->matchDetailRepository->findOneBy(['matchId' => $id]);
 
-        if (!$match)
-        {
+        if (!$match) {
             return null;
         }
         return $match;

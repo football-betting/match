@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=MatchDetailRepository::class)
  */
-class MatchDetail
+class MatchDetail implements \JsonSerializable
 {
     /**
      * @ORM\Id
@@ -113,4 +113,18 @@ class MatchDetail
 
         return $this;
     }
+
+    public function jsonSerialize()
+    {
+        return [
+            'matchId' => $this->getMatchId(),
+            'team1' => $this->getTeam1(),
+            'team2' => $this->getTeam2(),
+            'matchDatetime' => $this->getMatchDateTime(),
+            'scoreTeam1' => $this->getScoreTeam1(),
+            'scoreTeam2' => $this->getScoreTeam2(),
+        ];
+    }
+
+
 }

@@ -2,6 +2,8 @@
 
 namespace App\Service\Mapper;
 
+use App\DataTransferObject\MatchDetailDataProvider;
+use App\DataTransferObject\MatchListDataProvider;
 use App\Entity\MatchDetail;
 
 class MatchMapper
@@ -13,9 +15,10 @@ class MatchMapper
         return $matchList;
     }
 
+
     public function mapArrayToJson(array $matchList)
     {
-        return json_encode($matchList);
+        return json_encode($matchList, JSON_THROW_ON_ERROR);
     }
 
 
@@ -23,13 +26,44 @@ class MatchMapper
     {
         $matchDetail = new MatchDetail();
         $matchDetail->setMatchId($match['matchId']);
-        $matchDetail->setMatchDateTime($match['matchDatetime']);
         $matchDetail->setTeam1($match['team1']);
         $matchDetail->setTeam2($match['team2']);
+        $matchDetail->setMatchDateTime($match['matchDatetime']);
         $matchDetail->setScoreTeam1($match['scoreTeam1']);
         $matchDetail->setScoreTeam2($match['scoreTeam2']);
 
         return $matchDetail;
     }
 
+    public function mapToMatchDetailDataProvider(MatchDetail $matchDetail): MatchDetailDataProvider
+    {
+        $matchDto = new MatchDetailDataProvider();
+        $matchDto->setMatchId($matchDetail->getMatchId());
+        $matchDto->setTeam1($matchDetail->getTeam1());
+        $matchDto->setTeam2($matchDetail->getTeam2());
+        $matchDto->setMatchDateTime($matchDetail->getMatchDateTime());
+        $matchDto->setScoreTeam1($matchDetail->getScoreTeam1());
+        $matchDto->setScoreTeam2($matchDetail->getScoreTeam2());
+
+        return $matchDto;
+
+    }
+
+    public function mapArrayToJsonWithDp(array $matchListFromDb, string $event): array
+    {
+        $matchListDto = new MatchListDataProvider();
+        $matchListTemp = [];
+        $matchListDto->setEvent($event);
+
+        foreach ($matchListFromDb as $match)
+        {
+            $matchDto = $this->mapToMatchDetailDataProvider($match);
+            //$matchListTemp[] = $matchDto->toArray();
+            $matchListTemp[] = $matchDto;
+        }
+        $matchListDto->setData($matchListTemp);
+        // $matchListDto->toArray(); ta funkcja gubi null
+
+        return $matchListDto->toArray();
+    }
 }

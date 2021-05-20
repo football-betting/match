@@ -43,11 +43,14 @@ class MatchReader
         return $this->matchMapper->mapArrayToJson($matchList);
     }
 
+    /**
+     * @throws \JsonException
+     */
     public function getMatchListAsJsonDataProvider()
     {
         $matchList = $this->matchDetailRepository->findAll();
         $matchLisAsJson = $this->matchMapper->mapArrayToJsonWithDp($matchList, 'match');
-        return json_encode($matchLisAsJson);
+        return json_encode($matchLisAsJson, JSON_THROW_ON_ERROR);
     }
 
     public function getMatchWhereId(string $id): ?MatchDetail

@@ -6,7 +6,6 @@ use App\Repository\MatchDetailRepository;
 use App\Service\MatchManager;
 use App\Service\MatchReader;
 use App\Tests\Unit\Helper\MatchHelperTest;
-use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class MatchManagerTest extends KernelTestCase
@@ -72,13 +71,30 @@ class MatchManagerTest extends KernelTestCase
     }
 
 
+    public function testSaveNegative(): void
+    {
+        $matchDetail = new MatchDetail();
+        //$matchDetail->setMatchId('');
+        $matchDetail->setTeam1('FR');
+        $matchDetail->setTeam2('EN');
+        $matchDetail->setMatchDateTime('2020-06-17 21:00');
+        $matchDetail->setScoreTeam1(1);
+        $matchDetail->setScoreTeam2(1);
+
+       // $this->expectException(Exception::class, );
+       //  $this->matchManager->save($matchDetail);
+        self::assertNull( $this->matchManager->save($matchDetail));
+    }
+
+
+
+
     public function testSaveFromJsonToDB(): void
     {
         $this->matchManager->saveFromJsonToDB($this->matchHelperTest->getJsonData());
 
         $matchFromDB = $this->matchReader->getMatchWhereId('2020-06-16:2100:FR-DE');
 
-        //self::assertCount(2, $matchListFromDB);
         self::assertSame('2020-06-16:2100:FR-DE', $matchFromDB->getMatchId());
         self::assertSame('FR', $matchFromDB->getTeam1());
         self::assertSame('DE', $matchFromDB->getTeam2());
@@ -107,7 +123,6 @@ class MatchManagerTest extends KernelTestCase
 
         $matchFromDB = $this->matchReader->getMatchWhereId('2020-06-16:2100:FR-DE');
 
-        //self::assertCount(2, $matchListFromDB);
         self::assertSame('2020-06-16:2100:FR-DE', $matchFromDB->getMatchId());
         self::assertSame('FR', $matchFromDB->getTeam1());
         self::assertSame('DE', $matchFromDB->getTeam2());

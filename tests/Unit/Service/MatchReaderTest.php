@@ -1,15 +1,12 @@
 <?php declare(strict_types=1);
 
 
-use App\DataTransferObject\MatchDataProvider;
-use App\DataTransferObject\MatchListDataProvider;
 use App\Repository\MatchDetailRepository;
 use App\Service\MatchManager;
 use App\Service\MatchReader;
 use App\Tests\Unit\Helper\MatchHelperTest;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping as ORM;
-use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -40,7 +37,7 @@ class MatchReaderTest extends KernelTestCase
         $this->matchReader = $matchReader;
 
         $matchManager = self::$container->get(MatchManager::class);
-        $this->matchManager =  $matchManager;
+        $this->matchManager = $matchManager;
 
         $this->matchHelperTest = new MatchHelperTest();
     }
@@ -52,7 +49,7 @@ class MatchReaderTest extends KernelTestCase
     }
 
 
-    public function testGetMatchList()
+    public function testGetMatchList(): void
     {
         $this->matchHelperTest->createTemporaryMatch();
         $matchListFromDB = $this->matchReader->getMatchList();
@@ -75,8 +72,7 @@ class MatchReaderTest extends KernelTestCase
     }
 
 
-
-    public function testGetMatchWhereId()
+    public function testGetMatchWhereIdPositive(): void
     {
         $this->matchHelperTest->createTemporaryMatch();
         $matchFromDB = $this->matchReader->getMatchWhereId('2020-06-20:2000:PL-IT');
@@ -91,7 +87,7 @@ class MatchReaderTest extends KernelTestCase
         $this->matchHelperTest->deleteTemporaryMatch();
     }
 
-    public function testGetMatchWhereIdNegativ()
+    public function testGetMatchWhereIdNegativ(): void
     {
         $this->matchHelperTest->createTemporaryMatch();
         $matchFromDB = $this->matchReader->getMatchWhereId('9999-99-99:9999:PL-IT');
@@ -101,29 +97,38 @@ class MatchReaderTest extends KernelTestCase
         $this->matchHelperTest->deleteTemporaryMatch();
     }
 
-
-    public function testDataProvider(): void
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     * @throws JsonException
+     */
+    public function testDataProviderPositive(): void
     {
         $this->matchManager->saveFromJsonToDB($this->matchHelperTest->getJsonData());
 
-        self::assertSame($this->matchHelperTest->getJsonData(),$this->matchReader->getMatchListAsJsonDataProvider());
+        $dataOriginal = json_decode($this->matchHelperTest->getJsonData(), true, 512, JSON_THROW_ON_ERROR);
+        $dataFromDb = json_decode($this->matchReader->getMatchListAsJsonDataProvider(), true, 512, JSON_THROW_ON_ERROR);
+
+        $this->compareArrays($dataOriginal, $dataFromDb);
+
         $this->matchHelperTest->deleteTemporaryMatch();
     }
 
-    /*
-    public function testGetMatchListAsJson(): void
+    private function compareArrays(array $arrayGiven, array $arrayExpected): void
     {
-        $this->matchManager->saveFromJsonToDB($this->matchHelperTest->getJsonData());
+        self::assertSame(count(array_diff_key($arrayGiven, $arrayExpected)), 0);
 
-        $matchListAsJsonFromDb = '{"event":"match","data":'.$this->matchReader->getMatchListAsJson().'}';
+        foreach ($arrayGiven as $key => $value)
+        {
+           // self::assertSame($key, array_search($value, $arrayExpected, true)); //null jest podwujnie
 
-        self::assertSame($this->matchHelperTest->getJsonData(), $matchListAsJsonFromDb);
+            self::assertArrayHasKey($key, $arrayExpected);
 
-        // self::assertSame($this->matchHelperTest->getJsonData(),
-        //    $this->matchReader->getMatchListAsJson());
-
-        $this->matchHelperTest->deleteTemporaryMatch();
+            if(is_array($value)) // assertIsArray()
+            {
+                self::compareArrays($value, $arrayExpected[$key]);
+            }
+            self::assertSame($value, $arrayExpected[$key]);
+        }
     }
-*/
 }
 

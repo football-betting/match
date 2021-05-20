@@ -4,7 +4,6 @@ namespace App\Tests\Unit\Helper;
 
 use App\Entity\MatchDetail;
 use Doctrine\ORM\EntityManagerInterface;
-use PHPStan\Testing\TestCase;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class MatchHelperTest extends KernelTestCase
@@ -40,13 +39,10 @@ class MatchHelperTest extends KernelTestCase
         $this->entityManager = $kernel->getContainer()
             ->get('doctrine')
             ->getManager();
-
     }
-
 
     public function createTemporaryMatch(): array
     {
-
         $kernel = self::bootKernel();
 
         $this->entityManager = $kernel->getContainer()
@@ -90,33 +86,14 @@ class MatchHelperTest extends KernelTestCase
 
     public function getJsonData()
     {
-        $json = '{
-        "event":"match",
-                "data":[
-                    {
-                        "matchId":"2020-06-16:2100:FR-DE",
-                        "team1":"FR",
-                        "team2":"DE",
-                        "matchDatetime":"2020-06-16 21:00",
-                        "scoreTeam1":1,
-                        "scoreTeam2":0
-                     },
-                    {
-                        "matchId":"2020-06-20:2000:PL-IT",
-                        "team1":"PL",
-                        "team2":"IT",
-                        "matchDatetime":"2020-06-20 20:00",
-                        "scoreTeam1": null,
-                        "scoreTeam2": null
-                    }
-                ]
-            }';
-        return $json;
+        return '{"event":"match","data":[{"matchId":"2020-06-16:2100:FR-DE","team1":"FR","team2":"DE","matchDatetime":"2020-06-16 21:00","scoreTeam1":1,"scoreTeam2":0},{"matchId":"2020-06-20:2000:PL-IT","team1":"PL","team2":"IT","matchDatetime":"2020-06-20 20:00","scoreTeam1":null,"scoreTeam2":null}]}';
+
     }
+
 
     public function getJsonDataUpdate()
     {
-        $json = '{
+        return '{
         "event":"match",
                 "data":[
                     {
@@ -145,7 +122,12 @@ class MatchHelperTest extends KernelTestCase
                     }
                 ]
             }';
-        return $json;
+    }
+
+
+    public function test(): void
+    {
+        self::assertTrue(true);
     }
 
 }

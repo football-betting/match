@@ -8,11 +8,11 @@ use App\Entity\MatchDetail;
 
 class MatchMapper
 {
+    private const JSON_DEPTH = 512;
+
     public function mapJsonToArray($json): array
     {
-        $matchList[] = json_decode($json, true);
-
-        return $matchList;
+        return json_decode($json, true, self::JSON_DEPTH, JSON_THROW_ON_ERROR);
     }
 
 
@@ -35,7 +35,7 @@ class MatchMapper
         return $matchDetail;
     }
 
-    public function mapToMatchDetailDataProvider(MatchDetail $matchDetail): MatchDetailDataProvider
+    private function mapToMatchDetailDataProvider(MatchDetail $matchDetail): MatchDetailDataProvider
     {
         $matchDto = new MatchDetailDataProvider();
         $matchDto->setMatchId($matchDetail->getMatchId());
@@ -46,8 +46,19 @@ class MatchMapper
         $matchDto->setScoreTeam2($matchDetail->getScoreTeam2());
 
         return $matchDto;
-
     }
+
+
+    private function setNullValue(array $arrayGiven, string $field): array
+    {
+        foreach ($arrayGiven as $key => $item) {
+            if (!isset($item[$field])) {
+                $arrayGiven[$key][$field] = null;
+            }
+        }
+        return $arrayGiven;
+    }
+
 
     public function mapArrayToJsonWithDp(array $matchListFromDb, string $event): array
     {
@@ -55,15 +66,17 @@ class MatchMapper
         $matchListTemp = [];
         $matchListDto->setEvent($event);
 
-        foreach ($matchListFromDb as $match)
-        {
+        foreach ($matchListFromDb as $match) {
             $matchDto = $this->mapToMatchDetailDataProvider($match);
-            //$matchListTemp[] = $matchDto->toArray();
             $matchListTemp[] = $matchDto;
         }
         $matchListDto->setData($matchListTemp);
-        // $matchListDto->toArray(); ta funkcja gubi null
+        $matchListDtoArray = $matchListDto->toArray();
 
-        return $matchListDto->toArray();
+        $matchListDtoArray['data'] = $this->setNullValue($matchListDtoArray['data'], 'scoreTeam1');
+        $matchListDtoArray['data'] = $this->setNullValue($matchListDtoArray['data'], 'scoreTeam2');
+
+        return $matchListDtoArray;
     }
+
 }

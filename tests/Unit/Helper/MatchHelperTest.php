@@ -86,7 +86,27 @@ class MatchHelperTest extends KernelTestCase
 
     public function getJsonData()
     {
-        return '{"event":"match","data":[{"matchId":"2020-06-16:2100:FR-DE","team1":"FR","team2":"DE","matchDatetime":"2020-06-16 21:00","scoreTeam1":1,"scoreTeam2":0},{"matchId":"2020-06-20:2000:PL-IT","team1":"PL","team2":"IT","matchDatetime":"2020-06-20 20:00","scoreTeam1":null,"scoreTeam2":null}]}';
+        return '{
+        "event":"match",
+                "data":[
+                    {
+                        "matchId":"2020-06-16:2100:FR-DE",
+                        "team1":"FR",
+                        "team2":"DE",
+                        "matchDatetime":"2020-06-16 21:00",
+                        "scoreTeam1":1,
+                        "scoreTeam2":0
+                        },
+                        {
+                        "matchId":"2020-06-20:2000:PL-IT",
+                        "team1":"PL",
+                        "team2":"IT",
+                        "matchDatetime":"2020-06-20 20:00",
+                        "scoreTeam1":null,
+                        "scoreTeam2":null
+                        }
+                        ]
+                        }';
 
     }
 

@@ -6,9 +6,9 @@ use App\Entity\MatchDetail;
 
 class ValidatorMatch
 {
-    public function hasChanged(MatchDetail $matchDetailReceived, MatchDetail $matchFromDb): bool
+    public function hasChanged( MatchDetail $matchFromDb, array $matchDetailReceived): bool
     {
-        return $matchFromDb->getScoreTeam1() !== $matchDetailReceived->getScoreTeam1() ||
-            $matchFromDb->getScoreTeam2() !== $matchDetailReceived->getScoreTeam2();
+        return $matchFromDb->getScoreTeam1() !== $matchDetailReceived['scoreTeam1'] ||
+            $matchFromDb->getScoreTeam2() !== $matchDetailReceived['scoreTeam2'] ;
     }
 }

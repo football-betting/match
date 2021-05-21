@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=MatchDetailRepository::class)
  */
-class MatchDetail implements \JsonSerializable
+class MatchDetail
 {
     /**
      * @ORM\Id
@@ -112,18 +112,6 @@ class MatchDetail implements \JsonSerializable
         $this->scoreTeam2 = $scoreTeam2;
 
         return $this;
-    }
-
-    public function jsonSerialize()
-    {
-        return [
-            'matchId' => $this->getMatchId(),
-            'team1' => $this->getTeam1(),
-            'team2' => $this->getTeam2(),
-            'matchDatetime' => $this->getMatchDateTime(),
-            'scoreTeam1' => $this->getScoreTeam1(),
-            'scoreTeam2' => $this->getScoreTeam2(),
-        ];
     }
 
 

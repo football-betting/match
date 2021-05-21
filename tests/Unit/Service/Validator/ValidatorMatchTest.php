@@ -1,21 +1,15 @@
 <?php declare(strict_types=1);
 
+use App\DataFixtures\MatchFixtures;
 use App\Entity\MatchDetail;
-use App\Repository\MatchDetailRepository;
-use App\Service\MatchManager;
-use App\Service\MatchReader;
 use App\Service\Validator\ValidatorMatch;
 use App\Tests\Unit\Helper\MatchHelperTest;
-use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class ValidatorMatchTest extends KernelTestCase
 {
-    private MatchDetailRepository $matchDetailRepository;
     private ValidatorMatch $validatorMatch;
-    private MatchReader $matchReader;
-    private MatchManager $matchManager;
-    private MatchHelperTest $matchHelperTest;
+    private MatchFixtures $matchFixtures;
     private $entityManager;
 
     protected function setUp(): void
@@ -31,41 +25,45 @@ class ValidatorMatchTest extends KernelTestCase
         $validatorMatch = self::$container->get(ValidatorMatch::class);
         $this->validatorMatch = $validatorMatch;
 
-        $this->matchHelperTest = new MatchHelperTest();
+        $matchFixtures = self::$container->get(MatchFixtures::class);
+        $this->matchFixtures = $matchFixtures;
+
+        $this->matchFixtures->load($this->entityManager);
     }
 
     protected function tearDown(): void
     {
+        $this->matchFixtures->truncateTable($this->entityManager);
         parent::tearDown();
-        $this->matchHelperTest->deleteTemporaryMatch();
     }
 
     public function testValidHasChanged(): void
     {
         $matchDetailOne = new MatchDetail();
-        $matchDetailTwo = new MatchDetail();
+        $matchDetailTwo = [];
 
         $matchDetailOne->setScoreTeam1(1);
         $matchDetailOne->setScoreTeam2(1);
 
-        $matchDetailTwo->setScoreTeam1(9);
-        $matchDetailTwo->setScoreTeam2(1);
+        $matchDetailTwo['scoreTeam1'] = 9;
+        $matchDetailTwo['scoreTeam2'] = 1;
 
         self::assertTrue($this->validatorMatch->hasChanged($matchDetailOne, $matchDetailTwo));
 
         $matchDetailOne->setScoreTeam1(1);
         $matchDetailOne->setScoreTeam2(1);
 
-        $matchDetailTwo->setScoreTeam1(1);
-        $matchDetailTwo->setScoreTeam2(9);
+
+        $matchDetailTwo['scoreTeam1'] = 1;
+        $matchDetailTwo['scoreTeam2'] = 9;
 
         self::assertTrue($this->validatorMatch->hasChanged($matchDetailOne, $matchDetailTwo));
 
         $matchDetailOne->setScoreTeam1(1);
         $matchDetailOne->setScoreTeam2(1);
 
-        $matchDetailTwo->setScoreTeam1(9);
-        $matchDetailTwo->setScoreTeam2(9);
+        $matchDetailTwo['scoreTeam1'] = 9;
+        $matchDetailTwo['scoreTeam2'] = 9;
 
         self::assertTrue($this->validatorMatch->hasChanged($matchDetailOne, $matchDetailTwo));
 
@@ -74,15 +72,14 @@ class ValidatorMatchTest extends KernelTestCase
     public function testNotValidHasChanged(): void
     {
         $matchDetailOne = new MatchDetail();
-        $matchDetailTwo = new MatchDetail();
+        $matchDetailTwo = [];
 
         $matchDetailOne->setScoreTeam1(1);
         $matchDetailOne->setScoreTeam2(1);
 
-        $matchDetailTwo->setScoreTeam1(1);
-        $matchDetailTwo->setScoreTeam2(1);
+        $matchDetailTwo['scoreTeam1'] = 1;
+        $matchDetailTwo['scoreTeam2'] = 1;
 
         self::assertFalse($this->validatorMatch->hasChanged($matchDetailOne, $matchDetailTwo));
     }
-
 }

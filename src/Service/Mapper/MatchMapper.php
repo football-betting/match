@@ -8,20 +8,6 @@ use App\Entity\MatchDetail;
 
 class MatchMapper
 {
-    private const JSON_DEPTH = 512;
-
-    public function mapJsonToArray($json): array
-    {
-        return json_decode($json, true, self::JSON_DEPTH, JSON_THROW_ON_ERROR);
-    }
-
-
-    public function mapArrayToJson(array $matchList)
-    {
-        return json_encode($matchList, JSON_THROW_ON_ERROR);
-    }
-
-
     public function mapToMatchDetail(array $match): MatchDetail
     {
         $matchDetail = new MatchDetail();
@@ -49,17 +35,6 @@ class MatchMapper
     }
 
 
-    private function setNullValue(array $arrayGiven, string $field): array
-    {
-        foreach ($arrayGiven as $key => $item) {
-            if (!isset($item[$field])) {
-                $arrayGiven[$key][$field] = null;
-            }
-        }
-        return $arrayGiven;
-    }
-
-
     public function mapArrayToJsonWithDp(array $matchListFromDb, string $event): array
     {
         $matchListDto = new MatchListDataProvider();
@@ -77,6 +52,16 @@ class MatchMapper
         $matchListDtoArray['data'] = $this->setNullValue($matchListDtoArray['data'], 'scoreTeam2');
 
         return $matchListDtoArray;
+    }
+
+    private function setNullValue(array $arrayGiven, string $field): array
+    {
+        foreach ($arrayGiven as $key => $item) {
+            if (!isset($item[$field])) {
+                $arrayGiven[$key][$field] = null;
+            }
+        }
+        return $arrayGiven;
     }
 
 }

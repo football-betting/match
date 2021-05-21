@@ -10,7 +10,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class MessageTest extends TestCase
 {
-    public function testSend()
+    public function testSend(): void
     {
         $messageBusStub = new class implements MessageBusInterface {
             public TestDataProvider $message;

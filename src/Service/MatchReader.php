@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\Entity\MatchDetail;
 use App\Repository\MatchDetailRepository;
 use App\Service\Mapper\MatchMapper;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,36 +29,14 @@ class MatchReader
         $this->matchMapper = $matchMapper;
     }
 
-
-    public function getMatchList(): array
-    {
-        return $this->matchDetailRepository->findAll();
-    }
-
-
-    public function getMatchListAsJson()
-    {
-        $matchList = $this->matchDetailRepository->findAll();
-        return $this->matchMapper->mapArrayToJson($matchList);
-    }
-
     /**
      * @throws \JsonException
      */
-    public function getMatchListAsJsonDataProvider()
+    public function getMatchListAsJson()
     {
         $matchList = $this->matchDetailRepository->findAll();
         $matchLisAsJson = $this->matchMapper->mapArrayToJsonWithDp($matchList, 'match');
         return json_encode($matchLisAsJson, JSON_THROW_ON_ERROR);
     }
 
-    public function getMatchWhereId(string $id): ?MatchDetail
-    {
-        $match = $this->matchDetailRepository->findOneBy(['matchId' => $id]);
-
-        if (!$match) {
-            return null;
-        }
-        return $match;
-    }
 }

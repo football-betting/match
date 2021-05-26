@@ -108,4 +108,5 @@ class MatchManagerTest extends KernelTestCase
         self::assertSame(0, $matchFromDB->getScoreTeam2());
     }
 
+
 }

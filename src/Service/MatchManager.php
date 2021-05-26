@@ -43,11 +43,11 @@ class MatchManager
      */
     public function saveFromJsonToDB($json): void
     {
-        $matchList = json_decode($json, true, self::JSON_DEPTH, JSON_THROW_ON_ERROR);;
+        $matchList = json_decode($json, true, self::JSON_DEPTH, JSON_THROW_ON_ERROR);
         $matchList = $matchList['data'];
 
         foreach ($matchList as $match) {
-            $matchDetail = $this->matchDetailRepository->find($match['matchId']); //co jak nie znajdzie ID?
+            $matchDetail = $this->matchDetailRepository->find($match['matchId']);
             if (!$matchDetail instanceof MatchDetail) {
                 $matchDetail = $this->matchMapper->mapToMatchDetail($match);
                 $this->entityManager->persist($matchDetail);
@@ -59,6 +59,5 @@ class MatchManager
             }
         }
         $this->entityManager->flush();
-        // return $this->matchDetailRepository->findAll();
     }
 }

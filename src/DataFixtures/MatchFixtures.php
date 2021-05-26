@@ -18,6 +18,7 @@ class MatchFixtures extends Fixture
     public function __construct(MatchManager $matchManager)
     {
         $this->matchManager = $matchManager;
+
     }
 
     /**
@@ -38,7 +39,9 @@ class MatchFixtures extends Fixture
         $platform = $connection->getDatabasePlatform();
 
         $connection->executeUpdate($platform->getTruncateTableSQL('match_detail'));
+        $manager->clear();
     }
+
 
 
     public function getJsonData()

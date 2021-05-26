@@ -59,10 +59,13 @@ class MatchReaderTest extends KernelTestCase
         $dataOriginal = json_decode($this->matchFixtures->getJsonData(), true, 512, JSON_THROW_ON_ERROR);
         $dataFromDb = json_decode($this->matchReader->getMatchListAsJson(), true, 512, JSON_THROW_ON_ERROR);
 
-        $this->compareArrays($dataOriginal, $dataFromDb);
+        self::assertSame(count(array_diff_key($dataOriginal, $dataFromDb)), 0);
+        self::assertSame($dataOriginal['event'], 'match');
+        self::assertSame($dataFromDb['event'], 'calculation');
 
-        self::assertJsonStringEqualsJsonString($this->matchFixtures->getJsonData(),
-            $this->matchReader->getMatchListAsJson());
+        $this->compareArrays($dataOriginal['data'], $dataFromDb['data']);
+
+        //self::assertJsonStringEqualsJsonString($this->matchFixtures->getJsonData(), $this->matchReader->getMatchListAsJson());
     }
 
 
@@ -72,8 +75,7 @@ class MatchReaderTest extends KernelTestCase
         self::assertSame(array_keys($arrayGiven), array_keys($arrayExpected));
 
         foreach ($arrayGiven as $key => $value) {
-            // self::assertSame($key, array_search($value, $arrayExpected, true)); //null jest podwujnie
-
+            // self::assertSame($key, array_search($value, $arrayExpected, true));
             self::assertArrayHasKey($key, $arrayExpected);
 
             if (is_array($value)) // assertIsArray()

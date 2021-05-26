@@ -35,7 +35,7 @@ class MatchReader
     public function getMatchListAsJson()
     {
         $matchList = $this->matchDetailRepository->findAll();
-        $matchLisAsJson = $this->matchMapper->mapArrayToJsonWithDp($matchList, 'match');
+        $matchLisAsJson = $this->matchMapper->mapArrayToJsonWithDp($matchList, 'calculation');
         return json_encode($matchLisAsJson, JSON_THROW_ON_ERROR);
     }
 

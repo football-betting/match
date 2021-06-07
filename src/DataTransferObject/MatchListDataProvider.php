@@ -97,6 +97,16 @@ final class MatchListDataProvider extends \Xervice\DataProvider\Business\Model\D
 
 
     /**
+     * @param \App\DataTransferObject\MatchDetailDataProvider $Data
+     * @return MatchListDataProvider
+     */
+    public function addData(MatchDetailDataProvider $Data)
+    {
+        $this->data[] = $Data; return $this;
+    }
+
+
+    /**
      * @return array
      */
     protected function getElements(): array
@@ -121,6 +131,8 @@ final class MatchListDataProvider extends \Xervice\DataProvider\Business\Model\D
             'is_collection' => true,
             'is_dataprovider' => false,
             'isCamelCase' => false,
+            'singleton' => 'Data',
+            'singleton_type' => '\\App\\DataTransferObject\\MatchDetailDataProvider',
           ),
         );
     }

@@ -68,6 +68,15 @@ final class RedisService
     {
         $this->client->del([$key]);
     }
+
+    /**
+     * @param string $key
+     */
+    public function deleteAll(): void
+    {
+        $keys = $this->getKeys('*');
+        $ret = $this->client->del($keys);
+    }
 }
 
 

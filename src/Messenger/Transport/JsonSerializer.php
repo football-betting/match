@@ -24,7 +24,7 @@ class JsonSerializer implements SerializerInterface
 
         if ($data['event'] === "match.api.to.match" || $data['event'] === "match.api"  ) {
             $tipDataProvider = new MatchDetailDataProvider();
-            $tipDataProvider->fromArray($data);
+            $tipDataProvider->fromArray($data['data']);
 
             return new Envelope($tipDataProvider);
         }

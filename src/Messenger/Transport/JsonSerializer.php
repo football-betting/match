@@ -22,7 +22,7 @@ class JsonSerializer implements SerializerInterface
             throw new \LogicException('incorect message: event');
         }
 
-        if ($data['event'] === "match.api.to.match") {
+        if ($data['event'] === "match.api.to.match" || $data['event'] === "match.api"  ) {
             $tipDataProvider = new MatchDetailDataProvider();
             $tipDataProvider->fromArray($data);
 

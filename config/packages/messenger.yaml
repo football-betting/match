@@ -11,4 +11,3 @@ framework:
                 - match.api.to.match
             'App\DataTransferObject\MatchListDataProvider':
                 - match.to.calculation
-                - match.to.app

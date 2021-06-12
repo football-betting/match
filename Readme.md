@@ -1,5 +1,11 @@
 # Commands
 
+## Cronjobs
+
+```bash
+php bin/console messenger:consume match.api.to.match
+```
+
 
 ## Consume messages
 

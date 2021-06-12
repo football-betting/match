@@ -5,7 +5,6 @@ framework:
         transports:
             match.api.to.match: "%env(MATCH_API_TO_MATCH)%"
             match.to.calculation: "%env(MATCH_TO_CALCULATION)%"
-            match.to.app: "%env(MATCH_TO_APP)%"
         routing:
             'App\DataTransferObject\MatchDetailDataProvider':
                 - match.api.to.match

@@ -50,7 +50,7 @@ class JsonSerializer implements SerializerInterface
             ];
         }
 
-        if (method_exists($message, 'getEvent')) {
+        if (method_exists($message, 'getEvent') && $message->hasEvent()) {
             $eventMessage['event'] = $message->getEvent();
         }
 

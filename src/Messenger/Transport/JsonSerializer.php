@@ -50,6 +50,11 @@ class JsonSerializer implements SerializerInterface
             ];
         }
 
+        if (method_exists($message, 'getEvent')) {
+            $eventMessage['event'] = $message->getEvent();
+        }
+
+
         $stamps = $envelope->all();
         foreach ($stamps as $stampList) {
             foreach ($stampList as $stamp) {

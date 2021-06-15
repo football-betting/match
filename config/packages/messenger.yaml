@@ -5,10 +5,8 @@ framework:
         transports:
             match.api.to.match: "%env(MATCH_API_TO_MATCH)%"
             match.to.calculation: "%env(MATCH_TO_CALCULATION)%"
-            match.to.rating: "%env(MATCH_TO_RATING)%"
         routing:
             'App\DataTransferObject\MatchDetailDataProvider':
                 - match.api.to.match
             'App\DataTransferObject\MatchListDataProvider':
                 - match.to.calculation
-                - match.to.rating

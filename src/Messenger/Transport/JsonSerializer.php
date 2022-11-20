@@ -18,18 +18,14 @@ class JsonSerializer implements SerializerInterface
 
         $data = json_decode($encodedEnvelope['body'], true);
 
-        if (!isset($data['event'])) {
-            throw new \LogicException('incorect message: event');
-        }
+        $tipDataProvider = new MatchDetailDataProvider();
+        $tipDataProvider->fromArray($data['data']);
 
-        if ($data['event'] === "match.api.to.match" || $data['event'] === "match.api"  ) {
-            $tipDataProvider = new MatchDetailDataProvider();
-            $tipDataProvider->fromArray($data['data']);
-
+        if (!empty($tipDataProvider->getMatchId())) {
             return new Envelope($tipDataProvider);
         }
 
-        throw new \RuntimeException('Incorrect event: ' . $data['event']);
+        throw new \RuntimeException('Incorrect body: ' . $encodedEnvelope['body']);
     }
 
     public function encode(Envelope $envelope): array

@@ -24,19 +24,19 @@ class MatchMessageHandler
         $ident = $message->getMatchId();
         $matchFromRedis = $this->redisService->get($ident);
         if ($matchFromRedis === '') {
-            $this->redisService->set($ident, \Safe\json_encode($message->toArray(), JSON_THROW_ON_ERROR));
+            $this->redisService->set($ident, json_encode($message->toArray(), JSON_THROW_ON_ERROR));
             $this->sendMatchs();
 
             return;
         }
 
         $matchDetailDataProviderRedis = new MatchDetailDataProvider();
-        $matchDetailDataProviderRedis->fromArray(\Safe\json_decode($matchFromRedis, true));
+        $matchDetailDataProviderRedis->fromArray(json_decode($matchFromRedis, true));
 
         if ($message->getScoreTeam1() !== $matchDetailDataProviderRedis->getScoreTeam1() ||
             $message->getScoreTeam2() !== $matchDetailDataProviderRedis->getScoreTeam2()
         ) {
-            $this->redisService->set($ident, \Safe\json_encode($message->toArray(), JSON_THROW_ON_ERROR));
+            $this->redisService->set($ident, json_encode($message->toArray(), JSON_THROW_ON_ERROR));
             $this->sendMatchs();
         }
     }
@@ -48,7 +48,7 @@ class MatchMessageHandler
         $matchListDataProvider = new MatchListDataProvider();
         foreach ($matchs as $match) {
             $matchDetailDataProvider = new MatchDetailDataProvider();
-            $matchDetailDataProvider->fromArray(\Safe\json_decode($match, true));
+            $matchDetailDataProvider->fromArray(json_decode($match, true));
 
             $matchListDataProvider->addData($matchDetailDataProvider);
         }
